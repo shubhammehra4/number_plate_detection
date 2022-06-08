@@ -128,7 +128,7 @@ print("Automatic Number Plate Detection System.\n")
 array=[]
 dir = os.path.dirname(__file__)
 
-for img in glob.glob(dir+"/t/*") :
+for img in glob.glob(dir+"/Dataset/*") :
     img=cv2.imread(img)
     
     img2 = cv2.resize(img, (600, 600))
