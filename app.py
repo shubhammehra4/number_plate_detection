@@ -1,12 +1,14 @@
 import glob
 import os
 import glob
+import platform
 import cv2
 import pytesseract
 import re
 import pandas as pd
 
-pytesseract.pytesseract.tesseract_cmd = 'C:\Program Files\Tesseract-OCR\\tesseract'
+if  platform.system () == "Windows":
+    pytesseract.pytesseract.tesseract_cmd = 'C:\Program Files\Tesseract-OCR\\tesseract'
 
 challan_amount = {
     "KA51ML4400": 5000,
@@ -149,9 +151,9 @@ for (number, img) in challans:
     model = car_details[number][0]
     owner = car_details[number][1]
 
-    image[0:250, 0:650] = cv2.blur(image[0:250, 0:650], ksize=(80, 80))
+    image[0:250, 0:650] = cv2.blur(image[0:250, 0:650], ksize=(100, 100))
     cv2.rectangle(image, (0,0), (650, 250), (255, 0, 0), 1)
-    font = cv2.FONT_HERSHEY_SIMPLEX
+    font = cv2.FONT_HERSHEY_COMPLEX
 
     cv2.putText(image,text="Model: " + model, org=(10, 50),fontFace=font,color=(255,255,255),thickness=2,fontScale=1.1)
     cv2.putText(image,text="Owner: " + owner, org=(10, 100),fontFace=font,color=(255,255,255),thickness=2,fontScale=1.1)
