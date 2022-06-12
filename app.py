@@ -7,14 +7,16 @@ import pytesseract
 import re
 import pandas as pd
 
-if  platform.system () == "Windows":
+if  platform.system() == "Windows":
     pytesseract.pytesseract.tesseract_cmd = 'C:\Program Files\Tesseract-OCR\\tesseract'
 
 challan_amount = {
-    "KA51ML4400": 5000,
-    "MH20EE7598": 3000,
-    "DL10CE4581": 3500,
-    "21BH2345AA": 2000
+    "KA51ML4400": 2000,
+    "MH20EE7598": 2000,
+    "DL10CE4581": 2500,
+    "21BH2345AA": 2000,
+    "JK02CW0081": 500,
+    "JK14H0260": 2000,
 }
 
 car_details_data = pd.read_csv("car_details.csv")
@@ -77,43 +79,6 @@ def number_plate_recognition(plate):
     return number_plate
 
 
-# #Quick sort
-# def partition(arr,low,high): 
-#     i = ( low-1 )         
-#     pivot = arr[high]    
-  
-#     for j in range(low , high): 
-#         if   arr[j] < pivot: 
-#             i = i+1 
-#             arr[i],arr[j] = arr[j],arr[i] 
-  
-#     arr[i+1],arr[high] = arr[high],arr[i+1] 
-#     return ( i+1 ) 
-
-# def quickSort(arr,low,high): 
-#     if low < high: 
-#         pi = partition(arr,low,high) 
-  
-#         quickSort(arr, low, pi-1) 
-#         quickSort(arr, pi+1, high)
-        
-#     return arr
- 
-# #Binary search   
-# def binarySearch (arr, l, r, x): 
-  
-#     if r >= l: 
-#         mid = l + (r - l) // 2
-#         if arr[mid] == x: 
-#             return mid 
-#         elif arr[mid] > x: 
-#             return binarySearch(arr, l, mid-1, x) 
-#         else: 
-#             return binarySearch(arr, mid + 1, r, x) 
-#     else: 
-#         return -1
-    
-
 print("Automatic Number Plate Challan Detection System")
 
 dir = os.path.dirname(__file__)
@@ -121,8 +86,7 @@ cars=[]
 challans=[]
 
 for img in glob.glob(dir+"/Dataset/*") :
-    img1=cv2.imread(img) 
-    # img2 = cv2.resize(img1, (600, 600))
+    img1=cv2.imread(img)
     cv2.destroyAllWindows()
     
     number_plate = number_plate_recognition(img1)
@@ -163,6 +127,32 @@ for (number, img) in challans:
     cv2.waitKey(0)
     cv2.destroyAllWindows()
     
+
+car_cascade = cv2.CascadeClassifier('cars.xml')
+
+for vid in glob.glob(dir+"/Videos/*"):
+    cap = cv2.VideoCapture(vid)
+
+    while cap.isOpened():
+        ret, frame = cap.read()
+
+        if ret == True:
+            # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            # cars = car_cascade.detectMultiScale(gray, 2, 1)
+
+            # for (x,y,w,h) in cars:
+                    # cv2.rectangle(frame ,(x,y),(x+w,y+h),(0,0,255),2)
+            
+            cv2.imshow('Frame', frame)
+    
+            if cv2.waitKey(25) & 0xFF == ord('q'):
+                break
+        else: 
+            break
+
+    cap.release()
+    cv2.destroyAllWindows()
+
 
 #Searching
 # for img in glob.glob(dir+"/search/*.jpeg") :
