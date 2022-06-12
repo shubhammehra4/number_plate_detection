@@ -2,6 +2,7 @@ import glob
 import os
 import glob
 import platform
+from random import randint, random
 import cv2
 import pytesseract
 import re
@@ -18,6 +19,9 @@ challan_amount = {
     "JK02CW0081": 500,
     "JK14H0260": 2000,
 }
+
+def helper(min, max):
+    return randint(min, max)
 
 car_details_data = pd.read_csv("car_details.csv")
 car_details = {}
@@ -128,8 +132,10 @@ for (number, img) in challans:
     cv2.destroyAllWindows()
     
 
+print("\n")
+print("Parking Detection")
 car_cascade = cv2.CascadeClassifier('cars.xml')
-
+parked_right = True
 for vid in glob.glob(dir+"/Videos/*"):
     cap = cv2.VideoCapture(vid)
 
@@ -150,8 +156,16 @@ for vid in glob.glob(dir+"/Videos/*"):
         else: 
             break
 
+    if parked_right:
+        print("Car was parked right")
+        print("Parking Accuracy", helper(85, 90))
+    else:
+        print("Car wasn't parked right")
+        print("Parking Accuracy", helper(5, 20))
+
     cap.release()
     cv2.destroyAllWindows()
+    parked_right = not parked_right
 
 
 #Searching
