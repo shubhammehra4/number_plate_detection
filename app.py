@@ -56,6 +56,10 @@ def number_plate_recognition(plate):
     # cv2.imshow("Top 30 contours",image2)
     # cv2.waitKey(0)
 
+    x=0
+    y=0
+    w=0
+    h=0
     i=7
     for c in cnts:
         perimeter = cv2.arcLength(c, True)
@@ -80,7 +84,7 @@ def number_plate_recognition(plate):
     #     print(f"{number} has Challan of Rs {challan_amount[number]}")
     #     print("Generating E-Challan")
 
-    return number_plate
+    return [number_plate, [x,y,w,h]]
 
 
 print("Automatic Number Plate Challan Detection System")
@@ -93,13 +97,13 @@ for img in glob.glob(dir+"/Dataset/*") :
     img1=cv2.imread(img)
     cv2.destroyAllWindows()
     
-    number_plate = number_plate_recognition(img1)
+    [number_plate, pos] = number_plate_recognition(img1)
     if number_plate:
         number = re.sub("[^a-zA-Z0-9]*", '', number_plate)
         number=number.upper()
         cars.append(number)
         if number in challan_amount:
-            challans.append([number, img])
+            challans.append([number, img, pos])
 
 
 print ("\n")
@@ -110,11 +114,12 @@ for car in cars:
 
 print("\n")
 print("Vehicle numbers detected with a challan are: -")
-for (car, _) in challans:
+for (car, _, __) in challans:
     print(car)
 
-for (number, img) in challans:
+for (number, img, (x,y,w, h)) in challans:
     image = cv2.imread(img)
+    cv2.rectangle(image, (x,y), (x+w,y+h), (255, 0, 0), 2)
     image = cv2.resize(image, (900,900))
     model = car_details[number][0]
     owner = car_details[number][1]
